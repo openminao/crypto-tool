@@ -1,12 +1,21 @@
+import { theme } from "@/utils/theme";
 import { Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
+import { useEffect } from "react";
+import { Platform } from "react-native";
 
 export default function RootLayout() {
-  return (
-    <Stack screenOptions={{ 
-      headerShown: false, 
-      contentStyle: { backgroundColor: "#040c06" } 
-      }} />
+  useEffect(() => {
+    if (Platform.OS === 'web' && typeof document !== 'undefined') {
+      // Sync with CSS custom properties
+      document.documentElement.style.backgroundColor = theme.bgHighlight;
+      const meta = document.querySelector('meta[name="theme-color"]') as HTMLMetaElement | null;
+      if (meta) {
+        meta.setAttribute('content', theme.bg);
+      }
+    }
+  }, []);
 
+  return (
+    <Stack screenOptions={{ headerShown: false, }} />
   );
 }

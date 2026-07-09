@@ -57,9 +57,6 @@ export default function Index() {
         <meta property="og:description" content="一个纯本地运行的安全密码学工具箱与二维码编码解码器。支持MD5、SHA、HMAC哈希计算，AES、DES对称加密，Base64与URL编码转换，以及复古绿黑像素风格的二维码生成与本地图片二维码解析，100%保护您的隐私。" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://crypto.minao.cc" />
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:title" content="Crypto Tool | 本地安全密码学与二维码工具箱" />
-        <meta name="twitter:description" content="一个纯本地运行的安全密码学工具箱与二维码编码解码器。" />
       </HEAD>
 
       <ScrollView style={styles.container}
@@ -114,7 +111,7 @@ export default function Index() {
 
         <View style={{ flex: 1, maxWidth: 1200, alignSelf: "center", width: "100%" }}>
 
-          <View style={{ padding: 16, flexDirection: 'row', justifyContent: 'space-between' }}>
+          <View style={{ padding: 16, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
             <Text style={{ color: theme.textMuted }}>⚠️  本项目开源，纯本地运算，绝不会获取用户数据!</Text>
             <a style={{width: 24, height: 24}}
               href="https://github.com/openminao/crypto-tool"
@@ -134,7 +131,7 @@ export default function Index() {
 
               {/* Footer */}
               <View style={{ alignItems: 'center', padding: 16 }}>
-                <Text style={{ color: theme.textPrimary, fontSize: 12 }}>© 2026 <a 
+                <Text style={{ color: theme.textPrimary, fontSize: 12 }}>Copyright © 2026 <a 
                 href="https://minao.cc" 
                 style={{textDecoration: 'none', color: theme.textPrimary, }}
                 target="_blank">minao</a>

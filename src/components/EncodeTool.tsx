@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
     borderColor: theme.borderMuted,
     color: theme.textPrimary,
     fontFamily: fontMono,
-    fontSize: 13,
+    fontSize: 16,
     padding: 10,
     minHeight: 110,
     textAlignVertical: "top",
