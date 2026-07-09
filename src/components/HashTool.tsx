@@ -52,9 +52,9 @@ export default function HashTool({ isDesktop }: HashToolProps) {
   return (
     <View style={styles.container}>
 
-      <View style={[styles.workspace, isDesktop && styles.workspaceDesktop]}>
+      <View style={[styles.workspace]}>
         {/* Left / Top: Input panel */}
-        <View style={[styles.panel, isDesktop && styles.panelLeft]}>
+        <View style={[styles.panel]}>
           <Text style={styles.panelTitle}>▶ 输入配置</Text>
 
           {/* Source text area */}
@@ -132,7 +132,7 @@ export default function HashTool({ isDesktop }: HashToolProps) {
         </View>
 
         {/* Right / Bottom: Output panel */}
-        <View style={[styles.panel, isDesktop && styles.panelRight]}>
+        <View style={[styles.panel]}>
           <Text style={styles.panelTitle}>▶ 哈希结果</Text>
           <SliceControls
             key={selectedAlgo}
@@ -174,6 +174,8 @@ const styles = StyleSheet.create({
   },
   workspace: {
     gap: 16,
+    flexDirection: 'row',
+    flexWrap: 'wrap'
   },
   workspaceDesktop: {
     flexDirection: "row",
@@ -185,12 +187,14 @@ const styles = StyleSheet.create({
     borderColor: theme.borderMuted,
     padding: 14,
     gap: 14,
+    flex: 1,
+    minWidth: 480
   },
   panelLeft: {
     flex: 5,
   },
   panelRight: {
-    flex: 4,
+    flex: 1,
   },
   panelTitle: {
     color: theme.textSecondary,

@@ -286,11 +286,11 @@ export default function QrTool({ isDesktop }: QrToolProps) {
         </TouchableOpacity>
       </View>
 
-      <View style={[styles.workspace, isDesktop && styles.workspaceDesktop]}>
+      <View style={[styles.workspace]}>
         {mode === "encode" ? (
           <>
             {/* ENCODER: Input Panel */}
-            <View style={[styles.panel, isDesktop && styles.panelLeft]}>
+            <View style={[styles.panel]}>
               <Text style={styles.panelTitle}>▶ 配置生成参数</Text>
 
               {/* Text Input */}
@@ -348,7 +348,7 @@ export default function QrTool({ isDesktop }: QrToolProps) {
             </View>
 
             {/* ENCODER: Output Panel */}
-            <View style={[styles.panel, isDesktop && styles.panelRight]}>
+            <View style={[styles.panel]}>
               <Text style={styles.panelTitle}>▶ 像素生成预览</Text>
               <View style={styles.outputCard}>
                 {/* QR Preview Grid */}
@@ -385,7 +385,7 @@ export default function QrTool({ isDesktop }: QrToolProps) {
         ) : (
           <>
             {/* DECODER: Upload Panel */}
-            <View style={[styles.panel, isDesktop && styles.panelLeft]}>
+            <View style={[styles.panel]}>
               <Text style={styles.panelTitle}>▶ 载入二维码图片</Text>
 
               {Platform.OS === "web" ? (
@@ -443,7 +443,7 @@ export default function QrTool({ isDesktop }: QrToolProps) {
             </View>
 
             {/* DECODER: Result Panel */}
-            <View style={[styles.panel, isDesktop && styles.panelRight]}>
+            <View style={[styles.panel]}>
               <Text style={styles.panelTitle}>▶ 解析明文结果</Text>
               <View style={styles.outputCard}>
                 <View style={styles.outputHeader}>
@@ -520,6 +520,8 @@ const styles = StyleSheet.create({
   },
   workspace: {
     gap: 16,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
   },
   workspaceDesktop: {
     flexDirection: "row",
@@ -531,6 +533,8 @@ const styles = StyleSheet.create({
     borderColor: theme.borderMuted,
     padding: 14,
     gap: 14,
+    flex: 1,
+    minWidth: 480,
   },
   panelLeft: {
     flex: 5,

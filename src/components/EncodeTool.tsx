@@ -90,9 +90,9 @@ export default function EncodeTool({ isDesktop }: EncodeToolProps) {
         </TouchableOpacity>
       </View>
 
-      <View style={[styles.workspace, isDesktop && styles.workspaceDesktop]}>
+      <View style={[styles.workspace]}>
         {/* Input panel */}
-        <View style={[styles.panel, isDesktop && styles.panelLeft]}>
+        <View style={[styles.panel]}>
           <Text style={styles.panelTitle}>▶ 输入配置</Text>
 
           {/* Input text */}
@@ -154,7 +154,7 @@ export default function EncodeTool({ isDesktop }: EncodeToolProps) {
         </View>
 
         {/* Output panel */}
-        <View style={[styles.panel, isDesktop && styles.panelRight]}>
+        <View style={[styles.panel]}>
           <Text style={styles.panelTitle}>
             ▶ {mode === "encode" ? "编码转换结果" : "还原解码结果"}
           </Text>
@@ -241,6 +241,8 @@ const styles = StyleSheet.create({
   },
   workspace: {
     gap: 16,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
   },
   workspaceDesktop: {
     flexDirection: "row",
@@ -252,6 +254,8 @@ const styles = StyleSheet.create({
     borderColor: theme.borderMuted,
     padding: 14,
     gap: 14,
+    flex: 1,
+    minWidth: 480,
   },
   panelLeft: {
     flex: 5,
