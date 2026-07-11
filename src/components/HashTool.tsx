@@ -3,11 +3,11 @@ import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-nativ
 import { hmacMd5, hmacSha1, hmacSha256, hmacSha512, md5, sha1, sha256, sha3, sha512 } from "../utils/cryptoHelpers";
 import { getLastAlgorithm, saveLastAlgorithm } from "../utils/storageHelpers";
 import { fontMono, theme } from "../utils/theme";
+import { useIsDesktop } from "../hooks/useIsDesktop";
 import SliceControls from "./SliceControls";
+import ToolBox from "./ToolBox";
 
-interface HashToolProps {
-  isDesktop: boolean;
-}
+interface HashToolProps {}
 
 const HASH_ALGORITHMS = [
   { id: "md5", name: "MD5", isHmac: false, desc: "128-bit 常用快速哈希算法（不安全，适用于校验）" },
@@ -21,7 +21,8 @@ const HASH_ALGORITHMS = [
   { id: "hmac-sha512", name: "HMAC-SHA-512", isHmac: true, desc: "带密钥的 SHA-512 消息认证码" },
 ];
 
-export default function HashTool({ isDesktop }: HashToolProps) {
+export default function HashTool({ }: HashToolProps) {
+  const isDesktop = useIsDesktop();
   const [inputText, setInputText] = useState("");
   const [selectedAlgo, setSelectedAlgo] = useState(() => getLastAlgorithm("hash", "sha256"));
   const [hmacKey, setHmacKey] = useState("");
@@ -50,109 +51,100 @@ export default function HashTool({ isDesktop }: HashToolProps) {
   const activeAlgoObj = HASH_ALGORITHMS.find((a) => a.id === selectedAlgo) || HASH_ALGORITHMS[2];
 
   return (
-    <View style={styles.container}>
+    <ToolBox>
+      {/* Left / Top: Input panel */}
+      <View style={[styles.panel, isDesktop && styles.panelLeft]}>
+        <Text style={styles.panelTitle}>▶ 输入配置</Text>
 
-      <View style={[styles.workspace]}>
-        {/* Left / Top: Input panel */}
-        <View style={[styles.panel]}>
-          <Text style={styles.panelTitle}>▶ 输入配置</Text>
-
-          {/* Source text area */}
-          <View style={styles.fieldGroup}>
-            <View style={styles.fieldHeader}>
-              <Text style={styles.fieldLabel}>文本输入:</Text>
-              <Text style={styles.fieldMeta}>{inputText.length} 字符</Text>
-            </View>
-            <TextInput
-              style={styles.textArea}
-              allowFontScaling={false}
-              value={inputText}
-              onChangeText={setInputText}
-              placeholder="_ 输入要计算哈希的文本..."
-              placeholderTextColor={theme.textMuted}
-              multiline
-              numberOfLines={5}
-            />
+        {/* Source text area */}
+        <View style={styles.fieldGroup}>
+          <View style={styles.fieldHeader}>
+            <Text style={styles.fieldLabel}>文本输入:</Text>
+            <Text style={styles.fieldMeta}>{inputText.length} 字符</Text>
           </View>
-
-          {/* Algorithm picker */}
-          <View style={styles.fieldGroup}>
-            <Text style={styles.fieldLabel}>哈希算法:</Text>
-            <View style={styles.algoList}>
-              {HASH_ALGORITHMS.map((algo) => {
-                const isActive = selectedAlgo === algo.id;
-                return (
-                  <TouchableOpacity
-                    key={algo.id}
-                    style={[styles.algoItem, isActive && styles.algoItemActive]}
-                    onPress={() => handleSelectAlgo(algo.id)}
-                    activeOpacity={0.7}
-                  >
-                    <View style={styles.algoItemInner}>
-                      <Text style={[styles.algoMark, isActive && styles.algoMarkActive]}>
-                        {isActive ? "►" : ""}
-                      </Text>
-                      <Text style={[styles.algoName, isActive && styles.algoNameActive]}>
-                        {algo.name}
-                      </Text>
-                      {/* <Text style={styles.algoBits}>{algo.desc}</Text>
-                      {algo.isHmac && (
-                        <Text style={styles.algoHmacTag}>[HMAC]</Text>
-                      )} */}
-                    </View>
-                  </TouchableOpacity>
-                );
-              })}
-
-            </View>
-            <View style={styles.infoCard}>
-              <Text style={styles.infoTitle}>{`// ABOUT: ${activeAlgoObj.name}`}</Text>
-              <Text style={styles.infoText}>{activeAlgoObj.desc}</Text>
-              <Text style={[styles.infoText, {fontSize: 11}]}>
-                {activeAlgoObj.isHmac
-                  ? `HMAC (Hash-based Message Authentication Code) — 使用密钥对消息进行哈希签名，可验证消息完整性与来源。`
-                  : `单向哈希算法 — 它将任意长度的内容映射为固定长度的值。哈希算法不可逆，无法从哈希值反推原文。`}
-              </Text>
-            </View>
-          </View>
-
-          {/* HMAC key */}
-          {activeAlgoObj.isHmac && (
-            <View style={styles.fieldGroup}>
-              <Text style={styles.fieldLabel}>HMAC 秘钥 (SECRET KEY):</Text>
-              <TextInput
-                style={styles.keyInput}
-                value={hmacKey}
-                onChangeText={setHmacKey}
-                placeholder="_ 输入 HMAC 共享密钥..."
-                placeholderTextColor={theme.textMuted}
-              />
-            </View>
-          )}
-        </View>
-
-        {/* Right / Bottom: Output panel */}
-        <View style={[styles.panel]}>
-          <Text style={styles.panelTitle}>▶ 哈希结果</Text>
-          <SliceControls
-            key={selectedAlgo}
-            rawOutput={hashResult}
-            algoKey={selectedAlgo}
-            label={`${activeAlgoObj.name} 计算值`}
-            defaultEnabled={true}
+          <TextInput
+            id='hash-input'
+            style={styles.textArea}
+            allowFontScaling={false}
+            value={inputText}
+            onChangeText={setInputText}
+            placeholder="_ 输入要计算哈希的文本..."
+            placeholderTextColor={theme.textMuted}
+            multiline
+            numberOfLines={5}
           />
         </View>
+
+        {/* Algorithm picker */}
+        <View style={styles.fieldGroup}>
+          <Text style={styles.fieldLabel}>哈希算法:</Text>
+          <View style={styles.algoList}>
+            {HASH_ALGORITHMS.map((algo) => {
+              const isActive = selectedAlgo === algo.id;
+              return (
+                <TouchableOpacity
+                  key={algo.id}
+                  style={[styles.algoItem, isActive && styles.algoItemActive]}
+                  onPress={() => handleSelectAlgo(algo.id)}
+                  activeOpacity={0.7}
+                >
+                  <View style={styles.algoItemInner}>
+                    <Text style={[styles.algoMark, isActive && styles.algoMarkActive]}>
+                      {isActive ? "►" : ""}
+                    </Text>
+                    <Text style={[styles.algoName, isActive && styles.algoNameActive]}>
+                      {algo.name}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
+
+          </View>
+          <View style={styles.infoCard}>
+            <Text style={styles.infoTitle}>{`// ABOUT: ${activeAlgoObj.name}`}</Text>
+            <Text style={styles.infoText}>{activeAlgoObj.desc}</Text>
+            <Text style={[styles.infoText, { fontSize: 11 }]}>
+              {activeAlgoObj.isHmac
+                ? `HMAC (Hash-based Message Authentication Code) — 使用密钥对消息进行哈希签名，可验证消息完整性与来源。`
+                : `单向哈希算法 — 它将任意长度的内容映射为固定长度的值。哈希算法不可逆，无法从哈希值反推原文。`}
+            </Text>
+          </View>
+        </View>
+
+        {/* HMAC key */}
+        {activeAlgoObj.isHmac && (
+          <View style={styles.fieldGroup}>
+            <Text style={styles.fieldLabel}>HMAC 秘钥 (SECRET KEY):</Text>
+            <TextInput
+              id='hash-secret-key'
+              style={styles.keyInput}
+              value={hmacKey}
+              onChangeText={setHmacKey}
+              placeholder="_ 输入 HMAC 共享密钥..."
+              placeholderTextColor={theme.textMuted}
+            />
+          </View>
+        )}
       </View>
-    </View>
+
+      {/* Right / Bottom: Output panel */}
+      <View style={[styles.panel, isDesktop && styles.panelRight]}>
+        <Text style={styles.panelTitle}>▶ 哈希结果</Text>
+        <SliceControls
+          key={selectedAlgo}
+          rawOutput={hashResult}
+          algoKey={selectedAlgo}
+          label={`${activeAlgoObj.name} 计算值`}
+          defaultEnabled={true}
+        />
+      </View>
+    </ToolBox>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    gap: 16,
-  },
+
   pageHeader: {
     borderLeftWidth: 3,
     borderLeftColor: theme.border,
@@ -172,29 +164,19 @@ const styles = StyleSheet.create({
     fontSize: 10,
     letterSpacing: 2,
   },
-  workspace: {
-    gap: 16,
-    flexDirection: 'row',
-    flexWrap: 'wrap'
-  },
-  workspaceDesktop: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-  },
   panel: {
     backgroundColor: theme.bgPanel,
     borderWidth: 1,
     borderColor: theme.borderMuted,
     padding: 14,
+    paddingBottom: 20,
     gap: 14,
-    flex: 1,
-    minWidth: 480
   },
   panelLeft: {
     flex: 5,
   },
   panelRight: {
-    flex: 1,
+    flex: 4,
   },
   panelTitle: {
     color: theme.textSecondary,
@@ -204,7 +186,7 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
     borderBottomWidth: 1,
     borderBottomColor: theme.borderMuted,
-    paddingBottom: 8,
+    paddingBottom: 8
   },
   fieldGroup: {
     gap: 6,
@@ -240,7 +222,8 @@ const styles = StyleSheet.create({
   algoList: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 6
+    gap: 6,
+    paddingBottom: 10
   },
   algoItem: {
     paddingVertical: 7,

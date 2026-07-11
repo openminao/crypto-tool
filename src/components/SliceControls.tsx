@@ -124,6 +124,7 @@ export default function SliceControls({ rawOutput, algoKey, label = "OUTPUT", de
         <View style={styles.rangeField}>
             <Text style={styles.rangeLabel}>起始索引</Text>
             <TextInput
+              id='slice-start-input'
               style={styles.rangeInput}
               value={startInput}
               onChangeText={handleStartChange}
@@ -137,6 +138,7 @@ export default function SliceControls({ rawOutput, algoKey, label = "OUTPUT", de
           <View style={styles.rangeField}>
             <Text style={styles.rangeLabel}>结束索引</Text>
             <TextInput
+              id='slice-end-input'
               style={styles.rangeInput}
               value={endInput}
               onChangeText={handleEndChange}

@@ -12,10 +12,10 @@ import {
 } from "../utils/cryptoHelpers";
 import { getLastAlgorithm, saveLastAlgorithm } from "../utils/storageHelpers";
 import { fontMono, theme } from "../utils/theme";
+import { useIsDesktop } from "../hooks/useIsDesktop";
+import ToolBox from "./ToolBox";
 
-interface EncryptToolProps {
-  isDesktop: boolean;
-}
+interface EncryptToolProps {}
 
 type Mode = "encrypt" | "decrypt";
 
@@ -46,7 +46,8 @@ const ENCRYPT_ALGORITHMS = [
   },
 ];
 
-export default function EncryptTool({ isDesktop }: EncryptToolProps) {
+export default function EncryptTool({ }: EncryptToolProps) {
+  const isDesktop = useIsDesktop();
   const [mode, setMode] = useState<Mode>("encrypt");
   const [selectedAlgo, setSelectedAlgo] = useState(() => getLastAlgorithm("encrypt", "aes"));
   const [inputText, setInputText] = useState("");
@@ -88,12 +89,12 @@ export default function EncryptTool({ isDesktop }: EncryptToolProps) {
       navigator.clipboard.writeText(text).then(() => {
         setCopyFeedback(true);
         setTimeout(() => setCopyFeedback(false), 2000);
-      }).catch(() => {});
+      }).catch(() => { });
     }
   };
 
   return (
-    <View style={styles.container}>
+    <>
 
       {/* Mode selector */}
       <View style={styles.modeTabs}>
@@ -117,9 +118,9 @@ export default function EncryptTool({ isDesktop }: EncryptToolProps) {
         </TouchableOpacity>
       </View>
 
-      <View style={[styles.workspace]}>
+      <ToolBox>
         {/* Input panel */}
-        <View style={[styles.panel]}>
+        <View style={[styles.panel, isDesktop && styles.panelLeft]}>
           <Text style={styles.panelTitle}>▶ 输入配置</Text>
 
           {/* Input text */}
@@ -131,6 +132,7 @@ export default function EncryptTool({ isDesktop }: EncryptToolProps) {
               <Text style={styles.fieldMeta}>{inputText.length} 字符</Text>
             </View>
             <TextInput
+              id='encrypt-input'
               style={styles.textArea}
               value={inputText}
               onChangeText={setInputText}
@@ -148,6 +150,7 @@ export default function EncryptTool({ isDesktop }: EncryptToolProps) {
           <View style={styles.fieldGroup}>
             <Text style={styles.fieldLabel}>对称密钥 SECRET_KEY / PASSWORD:</Text>
             <TextInput
+              id='encrypt-secret-key'
               style={styles.keyInput}
               value={secretKey}
               onChangeText={setSecretKey}
@@ -189,7 +192,7 @@ export default function EncryptTool({ isDesktop }: EncryptToolProps) {
             <View style={styles.infoCard}>
               <Text style={styles.infoTitle}>{`// ABOUT: ${activeAlgoObj.fullName} ${activeAlgoObj.strength}`}</Text>
               <Text style={styles.algoFull}>{activeAlgoObj.desc}</Text>
-              
+
               <Text style={styles.infoNote}>
                 ■ 对称加密 (Symmetric Encryption) 指加密和解密使用同一个密钥的算法。速度极快，常用于海量数据的加密保护。
               </Text>
@@ -198,7 +201,7 @@ export default function EncryptTool({ isDesktop }: EncryptToolProps) {
         </View>
 
         {/* Output panel */}
-        <View style={[styles.panel]}>
+        <View style={[styles.panel, isDesktop && styles.panelRight]}>
           <Text style={styles.panelTitle}>
             ▶ {mode === "encrypt" ? "加密结果" : "解密结果"}
           </Text>
@@ -222,17 +225,13 @@ export default function EncryptTool({ isDesktop }: EncryptToolProps) {
             </View>
           </View>
         </View>
-      </View>
-    </View>
+      </ToolBox>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    gap: 14,
-  },
+
   pageHeader: {
     borderLeftWidth: 3,
     borderLeftColor: theme.border,
@@ -283,23 +282,12 @@ const styles = StyleSheet.create({
   modeTabTextActive: {
     color: theme.textPrimary,
   },
-  workspace: {
-    gap: 16,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-  workspaceDesktop: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-  },
   panel: {
     backgroundColor: theme.bgPanel,
     borderWidth: 1,
     borderColor: theme.borderMuted,
     padding: 14,
     gap: 14,
-    flex: 1,
-    minWidth: 480,
   },
   panelLeft: {
     flex: 5,
@@ -319,6 +307,7 @@ const styles = StyleSheet.create({
   },
   fieldGroup: {
     gap: 6,
+
   },
   fieldHeader: {
     flexDirection: "row",

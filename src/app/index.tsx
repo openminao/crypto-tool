@@ -1,4 +1,3 @@
-import { Image } from "expo-image";
 import HEAD from "expo-router/head";
 import { useState } from "react";
 import {
@@ -6,8 +5,8 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  useWindowDimensions,
-  View
+  View,
+  Image
 } from "react-native";
 import EncodeTool from "../components/EncodeTool";
 import EncryptTool from "../components/EncryptTool";
@@ -15,12 +14,11 @@ import HashTool from "../components/HashTool";
 import QrTool from "../components/QrTool";
 import Menu, { Category } from "../components/Menu";
 import { getLastCategory, saveLastCategory } from "../utils/storageHelpers";
-import { DESKTOP_BREAKPOINT, fontMono, theme } from "../utils/theme";
+import { fontMono, theme } from "../utils/theme";
+import { useIsDesktop } from "@/hooks/useIsDesktop";
 
 export default function Index() {
-  const { width } = useWindowDimensions();
-  const isDesktop = width >= DESKTOP_BREAKPOINT;
-
+  const isDesktop = useIsDesktop();
   const [activeCategory, setActiveCategory] = useState<Category>(() => {
     return getLastCategory("hash") as Category;
   });
@@ -35,15 +33,15 @@ export default function Index() {
   const renderTool = () => {
     switch (activeCategory) {
       case "hash":
-        return <HashTool isDesktop={isDesktop} />;
+        return <HashTool />;
       case "encrypt":
-        return <EncryptTool isDesktop={isDesktop} />;
+        return <EncryptTool />;
       case "encode":
-        return <EncodeTool isDesktop={isDesktop} />;
+        return <EncodeTool />;
       case "qr":
-        return <QrTool isDesktop={isDesktop} />;
+        return <QrTool />;
       default:
-        return <HashTool isDesktop={isDesktop} />;
+        return <HashTool />;
     }
   };
 
@@ -96,7 +94,7 @@ export default function Index() {
               />
             )}
           </View>
-          
+
           {/* Mobile dropdown menu (now inside the sticky header) */}
           {!isDesktop && mobileMenuOpen && (
             <View style={styles.mobileMenu}>
@@ -113,12 +111,12 @@ export default function Index() {
 
           <View style={{ padding: 16, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
             <Text style={{ color: theme.textMuted }}>⚠️  本项目开源，纯本地运算，绝不会获取用户数据!</Text>
-            <a style={{width: 24, height: 24}}
+            <a style={{ width: 24, height: 24 }}
               href="https://github.com/openminao/crypto-tool"
               target="_blank"
             >
-              <Image source={require('@/assets/images/github.svg')}  
-                style={{width: '100%', height: '100%'}}
+              <Image source={require('@/assets/images/github.svg')}
+                style={{ width: '100%', height: '100%' }}
                 tintColor={theme.textPrimary}
               />
             </a>
@@ -126,23 +124,25 @@ export default function Index() {
           {/* Main layout */}
           <View style={[styles.container, isDesktop && styles.containerDesktop]}>
             {/* Tool workspace */}
-            <View style={{flex: 1}}>
+            <View style={{ flex: 1 }}>
+              <View style={{flex: 1, gap: 16}}>
               {renderTool()}
 
+              </View>
               {/* Footer */}
               <View style={{ alignItems: 'center', padding: 16 }}>
-                <Text style={{ color: theme.textPrimary, fontSize: 12 }}>Copyright © 2026 <a 
-                href="https://minao.cc" 
-                style={{textDecoration: 'none', color: theme.textPrimary, }}
-                target="_blank">minao</a>
+                <Text style={{ color: theme.textPrimary, fontSize: 12 }}>Copyright © 2026 <a
+                  href="https://minao.cc"
+                  style={{ textDecoration: 'none', color: theme.textPrimary, }}
+                  target="_blank">minao</a>
                 </Text>
               </View>
             </View>
           </View>
         </View>
 
-      </ScrollView>
-    </View>
+      </ScrollView >
+    </View >
   );
 }
 

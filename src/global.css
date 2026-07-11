@@ -1,0 +1,9 @@
+html {
+    background-color: #102214;
+}
+
+@media (max-width: 768px) {
+    #workspace {
+        flex-direction: column !important;
+    }
+}

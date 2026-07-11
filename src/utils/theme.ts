@@ -1,3 +1,5 @@
+import { DefaultTheme } from "expo-router";
+
 // Retro pixel-art terminal color palette
 export const theme = {
   // Backgrounds
@@ -26,8 +28,14 @@ export const theme = {
   glowStrong: "rgba(56, 254, 56, 0.6)",
 };
 
+export const TransparentTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: 'transparent', 
+  },
+};
+
+
 // Retro font family — monospace only
 export const fontMono = "\"Courier New\", Courier, monospace";
-
-// Breakpoint for desktop layout
-export const DESKTOP_BREAKPOINT = 900;

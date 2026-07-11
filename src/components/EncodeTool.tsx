@@ -3,10 +3,10 @@ import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-nativ
 import { decodeBase64, decodeURL, encodeBase64, encodeURL } from "../utils/cryptoHelpers";
 import { getLastAlgorithm, saveLastAlgorithm } from "../utils/storageHelpers";
 import { fontMono, theme } from "../utils/theme";
+import { useIsDesktop } from "../hooks/useIsDesktop";
+import ToolBox from "./ToolBox";
 
-interface EncodeToolProps {
-  isDesktop: boolean;
-}
+interface EncodeToolProps {}
 
 type Mode = "encode" | "decode";
 
@@ -25,7 +25,8 @@ const ENCODE_ALGORITHMS = [
   },
 ];
 
-export default function EncodeTool({ isDesktop }: EncodeToolProps) {
+export default function EncodeTool({ }: EncodeToolProps) {
+  const isDesktop = useIsDesktop();
   const [mode, setMode] = useState<Mode>("encode");
   const [selectedAlgo, setSelectedAlgo] = useState(() => getLastAlgorithm("encode", "base64"));
   const [inputText, setInputText] = useState("");
@@ -61,13 +62,12 @@ export default function EncodeTool({ isDesktop }: EncodeToolProps) {
       navigator.clipboard.writeText(text).then(() => {
         setCopyFeedback(true);
         setTimeout(() => setCopyFeedback(false), 2000);
-      }).catch(() => {});
+      }).catch(() => { });
     }
   };
 
   return (
-    <View style={styles.container}>
-
+    <>
       {/* Mode toggle tabs */}
       <View style={styles.modeTabs}>
         <TouchableOpacity
@@ -90,9 +90,9 @@ export default function EncodeTool({ isDesktop }: EncodeToolProps) {
         </TouchableOpacity>
       </View>
 
-      <View style={[styles.workspace]}>
+      <ToolBox>
         {/* Input panel */}
-        <View style={[styles.panel]}>
+        <View style={[styles.panel, isDesktop && styles.panelLeft]}>
           <Text style={styles.panelTitle}>▶ 输入配置</Text>
 
           {/* Input text */}
@@ -104,6 +104,7 @@ export default function EncodeTool({ isDesktop }: EncodeToolProps) {
               <Text style={styles.fieldMeta}>{inputText.length} 字符</Text>
             </View>
             <TextInput
+              id='encode-input'
               style={styles.textArea}
               value={inputText}
               onChangeText={setInputText}
@@ -154,7 +155,7 @@ export default function EncodeTool({ isDesktop }: EncodeToolProps) {
         </View>
 
         {/* Output panel */}
-        <View style={[styles.panel]}>
+        <View style={[styles.panel, isDesktop && styles.panelRight]}>
           <Text style={styles.panelTitle}>
             ▶ {mode === "encode" ? "编码转换结果" : "还原解码结果"}
           </Text>
@@ -178,17 +179,13 @@ export default function EncodeTool({ isDesktop }: EncodeToolProps) {
             </View>
           </View>
         </View>
-      </View>
-    </View>
+      </ToolBox>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    gap: 14,
-  },
+
   pageHeader: {
     borderLeftWidth: 3,
     borderLeftColor: theme.border,
@@ -239,23 +236,12 @@ const styles = StyleSheet.create({
   modeTabTextActive: {
     color: theme.textPrimary,
   },
-  workspace: {
-    gap: 16,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-  workspaceDesktop: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-  },
   panel: {
     backgroundColor: theme.bgPanel,
     borderWidth: 1,
     borderColor: theme.borderMuted,
     padding: 14,
-    gap: 14,
-    flex: 1,
-    minWidth: 480,
+    gap: 14
   },
   panelLeft: {
     flex: 5,

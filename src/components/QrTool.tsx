@@ -1,25 +1,26 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import jsQR from "jsqr";
+import QRCode from "qrcode";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
+  Platform,
+  Image as RNImage,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
-  Platform,
-  Image as RNImage,
 } from "react-native";
-import QRCode from "qrcode";
-import jsQR from "jsqr";
 import { fontMono, theme } from "../utils/theme";
+import { useIsDesktop } from "../hooks/useIsDesktop";
+import ToolBox from "./ToolBox";
 
-interface QrToolProps {
-  isDesktop: boolean;
-}
+interface QrToolProps {}
 
 type Mode = "encode" | "decode";
 type EccLevel = "L" | "M" | "Q" | "H";
 
-export default function QrTool({ isDesktop }: QrToolProps) {
+export default function QrTool({ }: QrToolProps) {
+  const isDesktop = useIsDesktop();
   const [mode, setMode] = useState<Mode>("encode");
 
   // --- Encoder States ---
@@ -61,7 +62,7 @@ export default function QrTool({ isDesktop }: QrToolProps) {
     if (mode !== "encode" || Platform.OS !== "web") return;
     let isMounted = true;
     const textToEncode = inputText || " ";
-    
+
     QRCode.toDataURL(textToEncode, {
       errorCorrectionLevel: eccLevel,
       margin: 4,
@@ -108,7 +109,7 @@ export default function QrTool({ isDesktop }: QrToolProps) {
           setCopyFeedback(true);
           setTimeout(() => setCopyFeedback(false), 2000);
         })
-        .catch(() => {});
+        .catch(() => { });
     }
   };
 
@@ -216,7 +217,7 @@ export default function QrTool({ isDesktop }: QrToolProps) {
           setCopyDecodedFeedback(true);
           setTimeout(() => setCopyDecodedFeedback(false), 2000);
         })
-        .catch(() => {});
+        .catch(() => { });
     }
   };
 
@@ -263,7 +264,7 @@ export default function QrTool({ isDesktop }: QrToolProps) {
   };
 
   return (
-    <View style={styles.container}>
+    <>
       {/* Mode toggle tabs */}
       <View style={styles.modeTabs}>
         <TouchableOpacity
@@ -286,11 +287,11 @@ export default function QrTool({ isDesktop }: QrToolProps) {
         </TouchableOpacity>
       </View>
 
-      <View style={[styles.workspace]}>
+      <ToolBox>
         {mode === "encode" ? (
           <>
             {/* ENCODER: Input Panel */}
-            <View style={[styles.panel]}>
+            <View style={[styles.panel, isDesktop && styles.panelLeft]}>
               <Text style={styles.panelTitle}>▶ 配置生成参数</Text>
 
               {/* Text Input */}
@@ -300,6 +301,7 @@ export default function QrTool({ isDesktop }: QrToolProps) {
                   <Text style={styles.fieldMeta}>{inputText.length} 字符</Text>
                 </View>
                 <TextInput
+                  id='qr-encode-input'
                   style={styles.textArea}
                   value={inputText}
                   onChangeText={setInputText}
@@ -348,7 +350,7 @@ export default function QrTool({ isDesktop }: QrToolProps) {
             </View>
 
             {/* ENCODER: Output Panel */}
-            <View style={[styles.panel]}>
+            <View style={[styles.panel, isDesktop && styles.panelRight]}>
               <Text style={styles.panelTitle}>▶ 像素生成预览</Text>
               <View style={styles.outputCard}>
                 {/* QR Preview Grid */}
@@ -385,7 +387,7 @@ export default function QrTool({ isDesktop }: QrToolProps) {
         ) : (
           <>
             {/* DECODER: Upload Panel */}
-            <View style={[styles.panel]}>
+            <View style={[styles.panel, isDesktop && styles.panelLeft]}>
               <Text style={styles.panelTitle}>▶ 载入二维码图片</Text>
 
               {Platform.OS === "web" ? (
@@ -443,7 +445,7 @@ export default function QrTool({ isDesktop }: QrToolProps) {
             </View>
 
             {/* DECODER: Result Panel */}
-            <View style={[styles.panel]}>
+            <View style={[styles.panel, isDesktop && styles.panelRight]}>
               <Text style={styles.panelTitle}>▶ 解析明文结果</Text>
               <View style={styles.outputCard}>
                 <View style={styles.outputHeader}>
@@ -476,17 +478,13 @@ export default function QrTool({ isDesktop }: QrToolProps) {
             </View>
           </>
         )}
-      </View>
-    </View>
+      </ToolBox>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    gap: 14,
-  },
+
   modeTabs: {
     flexDirection: "row",
     borderWidth: 1,
@@ -518,23 +516,12 @@ const styles = StyleSheet.create({
   modeTabTextActive: {
     color: theme.textPrimary,
   },
-  workspace: {
-    gap: 16,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-  workspaceDesktop: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-  },
   panel: {
     backgroundColor: theme.bgPanel,
     borderWidth: 1,
     borderColor: theme.borderMuted,
     padding: 14,
     gap: 14,
-    flex: 1,
-    minWidth: 480,
   },
   panelLeft: {
     flex: 5,
