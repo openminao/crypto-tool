@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
     borderColor: theme.border,
     color: theme.textPrimary,
     fontFamily: fontMono,
-    fontSize: 16,
+    fontSize: 13,
     paddingHorizontal: 8,
     paddingVertical: 6,
     outlineStyle: "none",
